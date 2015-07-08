@@ -1,4 +1,4 @@
-package com.example;
+package com.footbits;
 
 import android.opengl.GLES20;
 
