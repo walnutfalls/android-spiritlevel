@@ -12,12 +12,18 @@ import android.view.ViewGroup;
  */
 public class SpiritLevelActivityFragment extends Fragment {
 
+    MyGLSurfaceView sampleView;
+
     public SpiritLevelActivityFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_spirit_level, container, false);
+
+        sampleView = new MyGLSurfaceView(this.getActivity());
+        return sampleView; // inflater.inflate(R.layout.fragment_spirit_level, container, false);
+
+
     }
 }
