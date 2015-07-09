@@ -7,6 +7,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+
+
         <activity
             android:name=".SpiritLevelActivity"
             android:label="@string/title_activity_spirit_level" >

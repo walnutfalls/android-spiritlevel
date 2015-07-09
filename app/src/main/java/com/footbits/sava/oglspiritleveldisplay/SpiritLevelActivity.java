@@ -1,17 +1,22 @@
 package com.footbits.sava.oglspiritleveldisplay;
 
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.texample2.GLText;
 
-public class SpiritLevelActivity extends ActionBarActivity {
+
+public class SpiritLevelActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spirit_level);
+
+        GLText glText = new GLText(getAssets());
     }
 
 

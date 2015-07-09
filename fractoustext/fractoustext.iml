@@ -28,5 +28,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="openglwrapper" exported="" />
+    <orderEntry type="library" exported="" name="fractoustext.fractoustext" level="project" />
   </component>
 </module>
