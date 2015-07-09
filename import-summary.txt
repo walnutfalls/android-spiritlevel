@@ -1,0 +1,78 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .idea\
+* .idea\.name
+* .idea\compiler.xml
+* .idea\copyright\
+* .idea\copyright\profiles_settings.xml
+* .idea\encodings.xml
+* .idea\misc.xml
+* .idea\modules.xml
+* .idea\scopes\
+* .idea\scopes\scope_settings.xml
+* .idea\uiDesigner.xml
+* .idea\vcs.xml
+* .idea\workspace.xml
+* LICENSE
+* README.md
+* orientationSensor.iml
+* out\
+* out\production\
+* out\production\orientationSensor\
+* out\production\orientationSensor\com\
+* out\production\orientationSensor\com\golshadi\
+* out\production\orientationSensor\com\golshadi\orientationSensor\
+* out\production\orientationSensor\com\golshadi\orientationSensor\BuildConfig.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\R$attr.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\R$drawable.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\R$layout.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\R$string.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\R.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\TestActivity.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\math\
+* out\production\orientationSensor\com\golshadi\orientationSensor\math\Matrix3x3.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\responseProvider\
+* out\production\orientationSensor\com\golshadi\orientationSensor\responseProvider\orientationResponseProvider.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\Isensor.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\Orientation$1.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\Orientation$calculateFusedOrientationTask.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\Orientation.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\accelerometer.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\gyroscope.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\sensors\magnetic.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\utils\
+* out\production\orientationSensor\com\golshadi\orientationSensor\utils\AppConstants.class
+* out\production\orientationSensor\com\golshadi\orientationSensor\utils\OrientationSensorInterface.class
+* out\production\orientationSensor\orientationSensor.apk
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => androidOrientationSensor\src\main\AndroidManifest.xml
+* res\ => androidOrientationSensor\src\main\res\
+* src\ => androidOrientationSensor\src\main\java\
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
