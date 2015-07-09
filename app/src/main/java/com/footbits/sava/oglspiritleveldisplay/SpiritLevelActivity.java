@@ -15,7 +15,7 @@ public class SpiritLevelActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spirit_level);
 
-        GLText glText = new GLText(getAssets());
+
     }
 
 
