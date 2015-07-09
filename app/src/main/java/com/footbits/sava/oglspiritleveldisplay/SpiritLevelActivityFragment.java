@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.footbits.oglwrapper.Program;
 import com.golshadi.orientationSensor.sensors.Orientation;
 import com.golshadi.orientationSensor.utils.OrientationSensorInterface;
 
@@ -36,6 +37,8 @@ public class SpiritLevelActivityFragment extends Fragment implements Orientation
         // 2 GAME
         // 3 FASTEST
         orientationSensor.on(3);
+
+        Program glProgram = new Program();
 
         return sampleView; // inflater.inflate(R.layout.fragment_spirit_level, container, false);
 

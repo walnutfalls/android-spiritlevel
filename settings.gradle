@@ -1,1 +1,1 @@
-include ':app', ':fractoustextes2', ':oglwrapper', ':androidorientationsensor'
+include ':app', ':fractoustextes2', ':oglwrapper', ':androidorientationsensor', ':util'

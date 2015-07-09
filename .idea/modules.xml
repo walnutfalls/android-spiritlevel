@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/fractoustextes2/fractoustextes2.iml" filepath="$PROJECT_DIR$/fractoustextes2/fractoustextes2.iml" />
       <module fileurl="file://$PROJECT_DIR$/oglwrapper/oglwrapper.iml" filepath="$PROJECT_DIR$/oglwrapper/oglwrapper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/util/util.iml" filepath="$PROJECT_DIR$/util/util.iml" />
     </modules>
   </component>
 </project>
