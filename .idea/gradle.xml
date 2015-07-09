@@ -11,8 +11,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/fractoustext" />
-            <option value="$PROJECT_DIR$/openglwrapper" />
+            <option value="$PROJECT_DIR$/fractoustextes2" />
+            <option value="$PROJECT_DIR$/oglwrapper" />
           </set>
         </option>
       </GradleProjectSettings>

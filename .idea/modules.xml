@@ -4,8 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/OGLSpiritLevelDisplay.iml" filepath="$PROJECT_DIR$/OGLSpiritLevelDisplay.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/fractoustext/fractoustext.iml" filepath="$PROJECT_DIR$/fractoustext/fractoustext.iml" />
-      <module fileurl="file://$PROJECT_DIR$/openglwrapper/openglwrapper.iml" filepath="$PROJECT_DIR$/openglwrapper/openglwrapper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fractoustextes2/fractoustextes2.iml" filepath="$PROJECT_DIR$/fractoustextes2/fractoustextes2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/oglwrapper/oglwrapper.iml" filepath="$PROJECT_DIR$/oglwrapper/oglwrapper.iml" />
     </modules>
   </component>
 </project>
