@@ -1,1 +1,1 @@
-include ':app', ':openglwrapper', ':fractoustext', ':fractoustextes2'
+include ':app', ':openglwrapper', ':fractoustextes2'
