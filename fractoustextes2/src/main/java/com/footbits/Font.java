@@ -1,4 +1,4 @@
-package com.footbits;
+package com.footbits.oglwrapper;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
