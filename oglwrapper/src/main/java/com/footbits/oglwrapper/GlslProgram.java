@@ -9,16 +9,24 @@
 
 package com.footbits.oglwrapper;
 
+import android.opengl.GLES20;
 import android.util.Log;
+
+import java.util.HashMap;
+
 import static android.opengl.GLES20.GL_LINK_STATUS;
 import static android.opengl.GLES20.GL_VALIDATE_STATUS;
 import static android.opengl.GLES20.glAttachShader;
 import static android.opengl.GLES20.glCreateProgram;
 import static android.opengl.GLES20.glDeleteProgram;
+import static android.opengl.GLES20.glGetActiveAttrib;
+import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetProgramInfoLog;
 import static android.opengl.GLES20.glGetProgramiv;
 import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glValidateProgram;
+import static android.opengl.GLES20.glGetActiveUniform;
+import static android.opengl.GLES20.glGetUniformLocation;
 
 
 
@@ -29,6 +37,9 @@ public class GlslProgram {
     private VertexShader vertexShader;
     private FragmentShader fragmentShader;
 
+    private HashMap<String, UniformInfo> uniformNameToInfo;
+    private HashMap<String, AttributeInfo> attributeNameToInfo;
+
 
     public GlslProgram(VertexShader vertexShader, FragmentShader fragmentShader) {
         this.vertexShader = vertexShader;
@@ -38,6 +49,16 @@ public class GlslProgram {
     public GlslProgram(String vertexShaderSource, String fragmentShaderSource) {
         vertexShader  = new VertexShader(vertexShaderSource);
         fragmentShader = new FragmentShader(fragmentShaderSource);
+        uniformNameToInfo = new HashMap<>();
+        attributeNameToInfo = new HashMap<>();
+    }
+
+    public int uniformLocation(String name){
+        return uniformNameToInfo.get(name).location;
+    }
+
+    public int attributeLocation(String name) {
+        return attributeNameToInfo.get(name).location;
     }
 
 
@@ -58,13 +79,24 @@ public class GlslProgram {
         linkProgram();
     }
 
+    public void bind()
+    {
+        GLES20.glUseProgram(programId);
+    }
+
     public void delete()
     {
         vertexShader.delete();
         fragmentShader.delete();
         glDeleteProgram(programId);
+        programId = 0;
     }
 
+    public boolean isBuilt() {
+        return programId != 0 &&
+                vertexShader.shaderId != 0 &&
+                fragmentShader.shaderId != 0;
+    }
 
     private void linkProgram(){
         // Attach the vertex shader to the program.
@@ -91,8 +123,76 @@ public class GlslProgram {
             delete();
             return;
         }
+
+        setUniformInfoMap();
+        setAttributeInfoMap();
     }
 
+    /**
+     * Iterates through shader's uniforms. Populates the uniformTypeToInfo map with uniform info.
+     */
+    private void setUniformInfoMap()
+    {
+        final int[] totalUniforms = new int[1]; //number of uniforms
+
+        final int[] nameLen = new int[1]; //length of a uniform name
+        final int namebufSize = 128; //number of characters ogl is allowed to write to uniform name
+        final byte[] nameBuf = new byte[namebufSize]; //contains uniform name
+
+        final int[] glslType = new int[1]; //type of uniform
+        final int[] size = new int[1]; //size of uniform
+
+        //get number of uniforms in program
+        glGetProgramiv(programId, GLES20.GL_ACTIVE_UNIFORMS, totalUniforms, 0);
+
+        for(int i = 0; i < totalUniforms[0]; ++i)
+        {
+            UniformInfo info = new UniformInfo();
+
+            //get uniform name
+            glGetActiveUniform(programId, i, namebufSize, nameLen, 0, size, 0, glslType, 0, nameBuf, 0);
+
+            info.name = new String(nameBuf, 0, nameLen[0]);
+            info.size = size[0];
+            info.glslType = glslType[0];
+            info.location = glGetUniformLocation(programId, info.name);
+
+            uniformNameToInfo.put(info.name, info);
+        }
+    }
+
+    /**
+     * Iterates through shader's attributes. Populates the uniformTypeToInfo map with uniform info.
+     */
+    private void setAttributeInfoMap()
+    {
+        final int[] totalAttribs = new int[1]; //number of uniforms
+
+        final int[] nameLen = new int[1]; //length of a uniform name
+        final int namebufSize = 128; //number of characters ogl is allowed to write to uniform name
+        final byte[] nameBuf = new byte[namebufSize]; //contains uniform name
+
+        final int[] glslType = new int[1]; //type of uniform
+        final int[] size = new int[1]; //size of uniform
+
+        //get number of uniforms in program
+        glGetProgramiv(programId, GLES20.GL_ACTIVE_ATTRIBUTES, totalAttribs, 0);
+
+        for(int i = 0; i < totalAttribs[0]; ++i)
+        {
+            AttributeInfo info = new AttributeInfo();
+
+            //get uniform name
+            glGetActiveAttrib(programId, i, namebufSize, nameLen, 0, size, 0, glslType, 0, nameBuf, 0);
+
+            info.name = new String(nameBuf, 0, nameLen[0]);
+            info.size = size[0];
+            info.glslType = glslType[0];
+            info.location = glGetAttribLocation(programId, info.name);
+
+            attributeNameToInfo.put(info.name, info);
+        }
+    }
 
     /**
      * Validates an OpenGL program. Should only be called when developing the
@@ -112,6 +212,9 @@ public class GlslProgram {
 
 
 
+
     public VertexShader getVertexShader() { return vertexShader; }
     public FragmentShader getFragmentShader() { return fragmentShader; }
+
+    public int getProgramId() { return programId; }
 }

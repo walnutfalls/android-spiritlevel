@@ -13,6 +13,7 @@ public abstract class Shader {
     private static final String TAG = "Shader";
 
     protected int shaderId;
+
     protected String source;
 
 
@@ -34,7 +35,7 @@ public abstract class Shader {
         // Verify the compile status.
         if (compileStatus[0] == 0) {
             // If it failed, delete the shader object.
-            glDeleteShader(shaderId);
+            delete();
 
             Log.e(TAG, "Compilation of shader failed.");
         }
@@ -42,10 +43,12 @@ public abstract class Shader {
 
     protected void delete() {
         glDeleteShader(shaderId);
+        shaderId = 0;
     }
 
-
-
-
     public int getShaderId() { return shaderId; }
+
+    public String getSource() {
+        return source;
+    }
 }
