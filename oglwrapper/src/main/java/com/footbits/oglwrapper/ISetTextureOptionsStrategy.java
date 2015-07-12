@@ -5,5 +5,5 @@ package com.footbits.oglwrapper;
  */
 public interface ISetTextureOptionsStrategy
 {
-    public void setTextureOptions();
+    void setTextureOptions();
 }

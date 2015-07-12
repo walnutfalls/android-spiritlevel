@@ -1,4 +1,4 @@
-package com.footbits.oglwrapper;
+package com.texample2;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.opengl.GLES20;
 import android.util.Log;
+
+import com.footbits.oglwrapper.*;
 
 
 public class Font {

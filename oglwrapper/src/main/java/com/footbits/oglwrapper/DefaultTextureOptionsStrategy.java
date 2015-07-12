@@ -5,7 +5,8 @@ import android.opengl.GLES20;
 /**
  * Created by Sava on 7/7/2015.
  */
-public class DefaultTextureOptionsStrat {
+public class DefaultTextureOptionsStrategy implements ISetTextureOptionsStrategy {
+    @Override
     public void setTextureOptions()
     {
         // Set filtering

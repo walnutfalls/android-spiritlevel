@@ -5,5 +5,5 @@ package com.footbits.oglwrapper;
  */
 public class SetTextureOptionsStrat
 {
-    public static ISetTextureOptionsStrategy Default = new DefaultTextureOptionsStat();
+    public static ISetTextureOptionsStrategy Default = new DefaultTextureOptionsStrategy();
 }

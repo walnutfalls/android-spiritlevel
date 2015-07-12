@@ -106,9 +106,9 @@ public class GLText {
 		spaceX = 0.0f;
 
 //		// Initialize the color and texture handles
-//		mProgram = program;
-//		mColorHandle = GLES20.glGetUniformLocation(mProgram.getHandle(), "u_Color");
-//        mTextureUniformHandle = GLES20.glGetUniformLocation(mProgram.getHandle(), "u_Texture");
+		mProgram = program;
+		mColorHandle = GLES20.glGetUniformLocation(mProgram.getHandle(), "u_Color");
+        mTextureUniformHandle = GLES20.glGetUniformLocation(mProgram.getHandle(), "u_Texture");
 	}
 	
 	// Constructor using the default program (BatchTextProgram)
@@ -171,6 +171,8 @@ public class GLText {
 		// find the maximum size, validate, and setup cell sizes
 		cellWidth = (int)charWidthMax + ( 2 * fontPadX );  // Set Cell Width
 		cellHeight = (int)charHeight + ( 2 * fontPadY );  // Set Cell Height
+
+
 		int maxSize = cellWidth > cellHeight ? cellWidth : cellHeight;  // Save Max Size (Width/Height)
 		if ( maxSize < FONT_SIZE_MIN || maxSize > FONT_SIZE_MAX )  // IF Maximum Size Outside Valid Bounds
 			return false;                                // Return Error
