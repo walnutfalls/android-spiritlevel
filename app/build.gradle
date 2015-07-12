@@ -25,4 +25,5 @@ dependencies {
     compile project(':oglwrapper')
     compile project(':fractoustextes2')
     compile project(':androidorientationsensor')
+    compile project(':util')
 }
