@@ -1,19 +1,29 @@
 package com.footbits.sava.oglspiritleveldisplay;
 
-import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_TEST;
+import static android.opengl.GLES20.GL_CULL_FACE;
+import static android.opengl.GLES20.GL_UNSIGNED_INT;
 
-import static android.opengl.GLES20.glBindBuffer;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glDepthFunc;
 import static android.opengl.GLES20.glDrawElements;
+import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glUniform4fv;
+import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glViewport;
 
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import com.concubicycle.util.TextResourceReader;
+import com.footbits.oglwrapper.AttributeInfo;
 import com.footbits.oglwrapper.Camera;
 import com.footbits.oglwrapper.GlslProgram;
 import com.texample2.GLText;
@@ -50,17 +60,22 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
         this.projectionViewMatrix = new float[16];
 
 		// camera is looking down negative z axis
-		camera.lookAt(0, 0, 3, //position
+		camera.lookAt(0, 0, 5, //position
 				0, 0, 0, //look at point
 				0, 1, 0); //up
 	}
 
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		// Set the background frame color
-		GLES20.glClearColor(0.2f, 0.0f, 0.3f, 1.0f);
+		glClearColor(0.2f, 0.0f, 0.3f, 1.0f);
+
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+
+		glDepthFunc(GLES20.GL_LEQUAL);
 
 		// enable texture + alpha blending
-		GLES20.glEnable(GLES20.GL_BLEND);
+		glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
 		simpleGlslProgram = new GlslProgram(
@@ -83,23 +98,55 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 	public void onDrawFrame(GL10 unused) {
 		// Redraw background color
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for(RenderedObject ro : renderedObjects) {
+		camera.getProjectionViewnMatrix(projectionViewMatrix);
+
+		float[] roMVP = new float[16];
+		float[] temp  = new float[16];
+
+		for (RenderedObject ro : renderedObjects) {
 			ro.getProgram().bind();
 
-			ro.getMesh().getGlVertexBuffer().setVertexAttribPointer(
-					0,
-					ro.getProgram().attributeLocation("a_Position"),
+			int dataOffset = 0;
+			int stride = 0;
+
+			Matrix.multiplyMM(temp, 0, camera.getViewMatrix(), 0, ro.getTransform().modelMatrix, 0);
+			Matrix.multiplyMM(roMVP, 0, camera.getProjectionMatrix(), 0, temp, 0);
+
+			AttributeInfo posAttrInfo = ro.getProgram().getAttributeNameToInfo().get("a_Position");
+
+
+			ro.getGlVertexBuffer().setVertexAttribPointer(
+					dataOffset,
+					posAttrInfo.location,
 					4,
+					stride,
+					posAttrInfo.glslType);
+
+
+			glUniformMatrix4fv(
+					ro.getProgram().uniformLocation("u_Matrix"),
+					1,
+					false,
+					roMVP,
 					0);
 
-			ro.getMesh().getGlIndexBuffer().bind();
-			glDrawElements(GL_TRIANGLES, ro.getMesh().getIndices().length, GL_UNSIGNED_SHORT, 0);
-			ro.getMesh().getGlIndexBuffer().unBind();
+			glUniform4fv(
+					ro.getProgram().uniformLocation("u_Color"),
+					1,
+					new float[]{0.3f, 0.75f, 0.5f, 1},
+					0
+			);
+
+
+			ro.getGlIndexBuffer().bind();
+			glDrawElements(GL_TRIANGLES, ro.getMesh().getIndices().length, GL_UNSIGNED_INT, 0);
+			ro.getGlIndexBuffer().unBind();
 		}
 
-        renderStrings();
+
+		renderStrings();
 	}
 
 	public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -122,7 +169,6 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 	}
 
     private void renderStrings() {
-        camera.getProjectionViewnMatrix(projectionViewMatrix);
         glText.begin(projectionViewMatrix);
         for (RenderedString str : strings) {
             glText.draw(str.getText(), str.getX(), str.getY());
@@ -152,8 +198,7 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 					ro.getProgram().getFragmentShader().getSource() + "\n\n");
 			}
 
-			// Create VBO's and such
-			ro.getMesh().createBuffers();
+			ro.createBuffers();
 		}
 	}
 
@@ -161,14 +206,19 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		ShapeBuilder builder = new ShapeBuilder(true);
 
 		builder.addQuad(
-				1.0f, -1.0f, 0.0f,
-				1.0f, 1.0f, 0.0f,
-				-1.0f, 1.0f, 0.0f,
-				-1.0f, -1.0f, 0.0f);
+				100.0f, 0.0f, -1.0f,
+				100.0f, 100.0f, -1.0f,
+				0.0f, 100.0f, -1.0f,
+				0.0f, 0.0f, -1.0f);
+
+		builder.addTriangle(
+				0.0f, 0.0f, -1.0f,
+				-300.0f, 0.0f, -1.0f,
+				0.0f, -200.0f, -1.0f);
+
+
 
 		Mesh mesh = builder.toMesh();
-
 		this.renderedObjects.add(new RenderedObject(mesh, simpleGlslProgram));
 	}
-
 }

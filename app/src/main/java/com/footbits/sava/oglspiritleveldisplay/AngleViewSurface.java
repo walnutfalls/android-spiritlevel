@@ -12,6 +12,9 @@ public class AngleViewSurface extends GLSurfaceView {
         // Using OpenGL ES2
         setEGLContextClientVersion(2);
 
+        // todo
+        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer);
 

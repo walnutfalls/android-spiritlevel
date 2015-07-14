@@ -8,18 +8,17 @@ public class ShapeBuilder
 {
     private ArrayList<Float> vertices;
     private ArrayList<Integer> indices;
-    private boolean useHomogenousCoords;
+    private boolean useHomogeneousCoordinates;
     private int floatsPerVertex;
 
-    public ShapeBuilder(boolean useHomogenousCoordinates)
+    public ShapeBuilder(boolean useHomogeneousCoordinates)
     {
         vertices = new ArrayList<Float>();
         indices = new ArrayList<Integer>();
 
-        useHomogenousCoords = useHomogenousCoordinates;
+        this.useHomogeneousCoordinates = useHomogeneousCoordinates;
 
-
-        if (useHomogenousCoords)
+        if (this.useHomogeneousCoordinates)
             floatsPerVertex = 4;
         else
             floatsPerVertex = 3;
@@ -54,9 +53,9 @@ public class ShapeBuilder
     {
         int currentSize = vertices.size() / floatsPerVertex;
 
-        addVertex(llx, lly, llz);
-        addVertex(ux, uy, uz);
         addVertex(lrx, lry, lrz);
+        addVertex(ux, uy, uz);
+        addVertex(llx, lly, llz);
 
         indices.add(currentSize);
         indices.add(currentSize + 1);
@@ -80,11 +79,7 @@ public class ShapeBuilder
     }
 
     public Mesh toMesh() {
-        Mesh m = new Mesh();
-        m.setVertices(getVertices());
-        m.setIndices(getIndicesInt());
-
-        return m;
+        return new Mesh(getVertices(), getIndicesInt());
     }
 
     public short[] getIndicesShort()
@@ -108,7 +103,7 @@ public class ShapeBuilder
         vertices.add(y);
         vertices.add(z);
 
-        if (useHomogenousCoords)
+        if (useHomogeneousCoordinates)
             vertices.add(1.0f);
     }
 

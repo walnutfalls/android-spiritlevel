@@ -55,16 +55,17 @@ public class IndexBuffer {
 
         // IMPORTANT: Unbind from the buffer when we're done with it.
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-        // We let the native buffer go out of scope, but it won't be released
-        // until the next time the garbage collector is run.
     }
 
     public void bind() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId);
     }
 
-    public void unBind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+    public void unBind() {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+
 
     public int getBufferId() {
         return bufferId;

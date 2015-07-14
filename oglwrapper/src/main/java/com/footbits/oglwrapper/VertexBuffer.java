@@ -27,6 +27,7 @@ public class VertexBuffer {
     private final int bufferId;
 
     public VertexBuffer(float[] vertexData) {
+
         // Allocate a buffer.
         final int buffers[] = new int[1];
         glGenBuffers(buffers.length, buffers, 0);
@@ -67,13 +68,16 @@ public class VertexBuffer {
     }
 
     public void setVertexAttribPointer(int dataOffset, int attributeLocation,
-                                       int componentCount, int stride) {
+                                       int componentCount, int stride, int glType) {
         glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-        // This call is slightly different than the glVertexAttribPointer we've
-        // used in the past: the last parameter is set to dataOffset, to tell OpenGL
+
+
+        // the last parameter is set to dataOffset, to tell OpenGL
         // to begin reading data at this position of the currently bound buffer.
         glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT,
                 false, stride, dataOffset);
+
+
         glEnableVertexAttribArray(attributeLocation);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }

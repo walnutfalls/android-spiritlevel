@@ -111,9 +111,10 @@ public class GlslProgram {
         final int[] linkStatus = new int[1];
         glGetProgramiv(programId, GL_LINK_STATUS, linkStatus, 0);
 
+        String msg =glGetProgramInfoLog(programId);
         // Print the program info log to the Android log output.
         Log.v(TAG, "Results of linking program:\n"
-                + glGetProgramInfoLog(programId));
+                + msg);
 
 
         // Verify the link status.
@@ -121,7 +122,7 @@ public class GlslProgram {
             // If it failed, delete the program object.
             Log.e(TAG, "Linking of program failed.");
             delete();
-            return;
+            throw new RuntimeException("Compilation of shader failed.");
         }
 
         setUniformInfoMap();
@@ -215,6 +216,14 @@ public class GlslProgram {
 
     public VertexShader getVertexShader() { return vertexShader; }
     public FragmentShader getFragmentShader() { return fragmentShader; }
+
+    public HashMap<String, UniformInfo> getUniformNameToInfo() {
+        return uniformNameToInfo;
+    }
+
+    public HashMap<String, AttributeInfo> getAttributeNameToInfo() {
+        return attributeNameToInfo;
+    }
 
     public int getProgramId() { return programId; }
 }

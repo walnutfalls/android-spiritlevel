@@ -29,15 +29,17 @@ public abstract class Shader {
         glGetShaderiv(shaderId, GL_COMPILE_STATUS, compileStatus, 0);
 
         // Print the shader info log to the Android log output.
+        String msg =glGetShaderInfoLog(shaderId);
         Log.v(TAG, "Results of compiling source:" + "\n" + source + "\n:"
-                + glGetShaderInfoLog(shaderId));
+                + msg);
 
         // Verify the compile status.
         if (compileStatus[0] == 0) {
             // If it failed, delete the shader object.
             delete();
 
-            Log.e(TAG, "Compilation of shader failed.");
+            Log.e(TAG, "Compilation of shader failed: " + msg);
+            throw new RuntimeException("Compilation of shader failed: " + msg);
         }
     }
 

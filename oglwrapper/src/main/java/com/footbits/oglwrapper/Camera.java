@@ -77,7 +77,7 @@ public class Camera {
         float halfHeight = screenHeight / 2;
 
         orthoM(projectionMatrix, 0, -halfWidth, halfWidth, -halfHeight, halfHeight,
-                Float.MIN_VALUE, Float.MAX_VALUE);
+                1, 100);
     }
 
     private void setPerspective() {
