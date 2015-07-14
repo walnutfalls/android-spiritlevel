@@ -1,6 +1,8 @@
 package com.footbits.sava.oglspiritleveldisplay;
 
 
+import android.graphics.drawable.shapes.Shape;
+
 import java.util.ArrayList;
 
 
@@ -24,7 +26,7 @@ public class ShapeBuilder
             floatsPerVertex = 3;
     }
 
-    public void addQuad(
+    public ShapeBuilder addQuad(
             Float lrx, Float lry, Float lrz, //lower right
             Float urx, Float ury, Float urz, //upper right
             Float ulx, Float uly, Float ulz, //upper left
@@ -44,9 +46,11 @@ public class ShapeBuilder
         indices.add(currentVertex);
         indices.add(currentVertex+2);
         indices.add(currentVertex+3);
+
+        return this;
     }
 
-    public void addTriangle(
+    public ShapeBuilder addTriangle(
             Float lrx, Float lry, Float lrz, //lower right
             Float ux, Float uy, Float uz, //upper
             Float llx, Float lly, Float llz) //lower left
@@ -60,6 +64,8 @@ public class ShapeBuilder
         indices.add(currentSize);
         indices.add(currentSize + 1);
         indices.add(currentSize + 2);
+
+        return this;
     }
 
     public void reset()

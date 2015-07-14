@@ -87,7 +87,9 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 
 		/// TEMP
-		addSampleSquare();
+		RenderedAxis axis = new RenderedAxis(simpleGlslProgram);
+		axis.createMarks();
+		renderedObjects.addAll(axis.getMarks());
 		////
 
 
@@ -102,48 +104,8 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 		camera.getProjectionViewnMatrix(projectionViewMatrix);
 
-		float[] roMVP = new float[16];
-		float[] temp  = new float[16];
+		renderObjects(renderedObjects);
 
-		for (RenderedObject ro : renderedObjects) {
-			ro.getProgram().bind();
-
-			int dataOffset = 0;
-			int stride = 0;
-
-			Matrix.multiplyMM(temp, 0, camera.getViewMatrix(), 0, ro.getTransform().modelMatrix, 0);
-			Matrix.multiplyMM(roMVP, 0, camera.getProjectionMatrix(), 0, temp, 0);
-
-			AttributeInfo posAttrInfo = ro.getProgram().getAttributeNameToInfo().get("a_Position");
-
-
-			ro.getGlVertexBuffer().setVertexAttribPointer(
-					dataOffset,
-					posAttrInfo.location,
-					4,
-					stride,
-					posAttrInfo.glslType);
-
-
-			glUniformMatrix4fv(
-					ro.getProgram().uniformLocation("u_Matrix"),
-					1,
-					false,
-					roMVP,
-					0);
-
-			glUniform4fv(
-					ro.getProgram().uniformLocation("u_Color"),
-					1,
-					new float[]{0.3f, 0.75f, 0.5f, 1},
-					0
-			);
-
-
-			ro.getGlIndexBuffer().bind();
-			glDrawElements(GL_TRIANGLES, ro.getMesh().getIndices().length, GL_UNSIGNED_INT, 0);
-			ro.getGlIndexBuffer().unBind();
-		}
 
 
 		renderStrings();
@@ -221,4 +183,50 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		Mesh mesh = builder.toMesh();
 		this.renderedObjects.add(new RenderedObject(mesh, simpleGlslProgram));
 	}
+
+	private void renderObjects(ArrayList<RenderedObject> objects) {
+		float[] roMVP = new float[16];
+		float[] temp  = new float[16];
+
+		for (RenderedObject ro : objects) {
+			ro.getProgram().bind();
+
+			int dataOffset = 0;
+			int stride = 0;
+
+			Matrix.multiplyMM(temp, 0, camera.getViewMatrix(), 0, ro.getTransform().modelMatrix, 0);
+			Matrix.multiplyMM(roMVP, 0, camera.getProjectionMatrix(), 0, temp, 0);
+
+			AttributeInfo posAttrInfo = ro.getProgram().getAttributeNameToInfo().get("a_Position");
+
+
+			ro.getGlVertexBuffer().setVertexAttribPointer(
+					dataOffset,
+					posAttrInfo.location,
+					4,
+					stride,
+					posAttrInfo.glslType);
+
+
+			glUniformMatrix4fv(
+					ro.getProgram().uniformLocation("u_Matrix"),
+					1,
+					false,
+					roMVP,
+					0);
+
+			glUniform4fv(
+					ro.getProgram().uniformLocation("u_Color"),
+					1,
+					new float[]{0.3f, 0.75f, 0.5f, 1},
+					0
+			);
+
+
+			ro.getGlIndexBuffer().bind();
+			glDrawElements(GL_TRIANGLES, ro.getMesh().getIndices().length, GL_UNSIGNED_INT, 0);
+			ro.getGlIndexBuffer().unBind();
+		}
+	}
+
 }
