@@ -32,14 +32,24 @@ public class RenderedAxis {
                 .toMesh();
     }
 
-    public void createMarks()
+    public void createMarks(int totalSpacepx, int markGap, int markLen, int screenWidth)
     {
-        for(int i = -500; i < 10; i++)
+        int spaceHalf = totalSpacepx / 2;
+        int numMarks = totalSpacepx / markGap;
+
+
+
+        for(int i = -spaceHalf; i < numMarks; i++)
         {
             RenderedObject ro = new RenderedObject(axisMarkMesh, glslProgram);
 
-            Matrix.translateM(ro.getTransform().modelMatrix, 0, 0, i * 50, 0);
-            Matrix.scaleM(ro.getTransform().modelMatrix, 0, 30, 3, 1);
+            Matrix.translateM(ro.getTransform().modelMatrix, 0,
+                    -screenWidth/2 + markLen/2,
+                    i * markGap, 0);
+
+            Matrix.scaleM(ro.getTransform().modelMatrix, 0, markLen, 3, 1);
+
+            ro.createBuffers();
 
             marks.add(ro);
         }

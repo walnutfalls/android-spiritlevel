@@ -84,16 +84,6 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 		simpleGlslProgram.compile();
 
-
-
-		/// TEMP
-		RenderedAxis axis = new RenderedAxis(simpleGlslProgram);
-		axis.createMarks();
-		renderedObjects.addAll(axis.getMarks());
-		////
-
-
-
 		loadRenderableObjects();
 		initGLText();
 	}
@@ -115,6 +105,13 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		// Set the OpenGL viewport to fill the entire surface.
 		glViewport(0, 0, width, height);
 		camera.setScreenDimensions(width, height);
+
+		/// TEMP
+		int heightPad = 100;
+		RenderedAxis axis = new RenderedAxis(simpleGlslProgram);
+		axis.createMarks(height - heightPad * 2, 40, 20, width);
+		renderedObjects.addAll(axis.getMarks());
+		////
 	}
 
 	public ArrayList<RenderedString> getStrings() {
