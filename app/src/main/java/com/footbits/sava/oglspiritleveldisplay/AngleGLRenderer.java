@@ -25,7 +25,9 @@ import android.util.Log;
 import com.concubicycle.util.TextResourceReader;
 import com.footbits.oglwrapper.AttributeInfo;
 import com.footbits.oglwrapper.Camera;
+import com.footbits.oglwrapper.Color;
 import com.footbits.oglwrapper.GlslProgram;
+import com.footbits.oglwrapper.MatrixUniform;
 import com.texample2.GLText;
 import com.texample2.RenderedString;
 
@@ -48,9 +50,21 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 	private GlslProgram simpleGlslProgram;
 
     private float[] projectionViewMatrix;
-	private int currentGlslProgramId;
+
+
+	private RenderedAxis leftAxis;
+	private RenderedAxis upAxis;
+
+	private RenderedObject crosshairs;
 
 	public AngleGLRenderer(Context context) {
+		simpleGlslProgram = new GlslProgram(
+				TextResourceReader.readTextFileFromResource(context, R.raw.simple_vert),
+				TextResourceReader.readTextFileFromResource(context, R.raw.simple_frag));
+
+
+		Mesh ch_mesh = UiElementDrawer.drawCrosshair(100, 3, 1000);
+		crosshairs = new RenderedObject(ch_mesh, simpleGlslProgram);
 		this.context = context;
 
 		this.strings = new ArrayList<>();
@@ -78,14 +92,20 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-		simpleGlslProgram = new GlslProgram(
-				TextResourceReader.readTextFileFromResource(context, R.raw.simple_vert),
-				TextResourceReader.readTextFileFromResource(context, R.raw.simple_frag));
-
 		simpleGlslProgram.compile();
 
 		loadRenderableObjects();
 		initGLText();
+
+
+		// init objects
+		this.leftAxis = new RenderedAxis(new AngleExtent(200), simpleGlslProgram);
+		this.upAxis = new RenderedAxis(new AngleExtent(200), simpleGlslProgram);
+
+
+		crosshairs.setColor(new Color(1.0f, 0.760784f, 0.0f, 1.0f));
+		crosshairs.createBuffers();
+		renderedObjects.add(crosshairs);
 	}
 
 	public void onDrawFrame(GL10 unused) {
@@ -96,7 +116,8 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 		renderObjects(renderedObjects);
 
-
+		renderObjects(leftAxis.getMarks());
+		renderObjects(upAxis.getMarks());
 
 		renderStrings();
 	}
@@ -106,12 +127,17 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		glViewport(0, 0, width, height);
 		camera.setScreenDimensions(width, height);
 
-		/// TEMP
-		int heightPad = 100;
-		RenderedAxis axis = new RenderedAxis(simpleGlslProgram);
-		axis.createMarks(height - heightPad * 2, 40, 20, width);
-		renderedObjects.addAll(axis.getMarks());
-		////
+		Matrix.setIdentityM(leftAxis.getAxisTransform().modelMatrix, 0);
+		Matrix.translateM(leftAxis.getAxisTransform().modelMatrix, 0, -width / 2.0f, 0.0f, 0.0f);
+
+		float[] upMat = upAxis.getAxisTransform().modelMatrix;
+		Matrix.setIdentityM(upMat, 0);
+
+		Matrix.translateM(upMat, 0, 0, height / 2.0f, 0.0f);
+		Matrix.rotateM(upMat, 0, -90, 0, 0, 1);
+
+		leftAxis.updateMarks(height - 200, 30);
+		upAxis.updateMarks(width - 200, 30);
 	}
 
 	public ArrayList<RenderedString> getStrings() {
@@ -215,7 +241,7 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 			glUniform4fv(
 					ro.getProgram().uniformLocation("u_Color"),
 					1,
-					new float[]{0.3f, 0.75f, 0.5f, 1},
+					ro.getColor().getRgbaArray(),
 					0
 			);
 
@@ -226,4 +252,8 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
+
+	public RenderedObject getCrosshairs() {
+		return crosshairs;
+	}
 }

@@ -10,8 +10,8 @@ public class UiElementDrawer
 {
     private static ShapeBuilder shapeBuilder = new ShapeBuilder(true);
 
-    public static Mesh drawCrosshair(float gapSize, float thickness, float span,
-                                          float r, float g, float b)
+    public static Mesh drawCrosshair(float gapSize, float thickness, float span)
+
     {
         float halfGapSize = gapSize / 2.0f;
         float halfThickness = thickness / 2.0f;

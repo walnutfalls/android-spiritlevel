@@ -1,6 +1,9 @@
 package com.footbits.sava.oglspiritleveldisplay;
 
 
+
+
+import com.footbits.oglwrapper.Color;
 import com.footbits.oglwrapper.GlslProgram;
 import com.footbits.oglwrapper.IndexBuffer;
 import com.footbits.oglwrapper.VertexBuffer;
@@ -30,9 +33,11 @@ public class RenderedObject {
     private VertexBuffer glVertexBuffer;
     private IndexBuffer glIndexBuffer;
 
+    private Color color;
+
     public RenderedObject(Mesh mesh, GlslProgram program) {
         transform = new Transform();
-
+        color = Color.WHITE;
 
         this.mesh = mesh;
         this.program = program;
@@ -77,4 +82,12 @@ public class RenderedObject {
 
     public VertexBuffer getGlVertexBuffer() {return glVertexBuffer;}
     public IndexBuffer getGlIndexBuffer() {return glIndexBuffer;}
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }
