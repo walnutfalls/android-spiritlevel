@@ -27,9 +27,7 @@ import com.footbits.oglwrapper.AttributeInfo;
 import com.footbits.oglwrapper.Camera;
 import com.footbits.oglwrapper.Color;
 import com.footbits.oglwrapper.GlslProgram;
-import com.footbits.oglwrapper.MatrixUniform;
 import com.texample2.GLText;
-import com.texample2.RenderedString;
 
 
 import java.util.ArrayList;
@@ -73,6 +71,9 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		this.camera = new Camera(context, Camera.Projection.Orthographic);
         this.projectionViewMatrix = new float[16];
 
+		this.leftAxis = new RenderedAxis(new AngleExtent(100), simpleGlslProgram);
+		this.upAxis = new RenderedAxis(new AngleExtent(100), simpleGlslProgram);
+
 		// camera is looking down negative z axis
 		camera.lookAt(0, 0, 5, //position
 				0, 0, 0, //look at point
@@ -96,12 +97,6 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 		loadRenderableObjects();
 		initGLText();
-
-
-		// init objects
-		this.leftAxis = new RenderedAxis(new AngleExtent(200), simpleGlslProgram);
-		this.upAxis = new RenderedAxis(new AngleExtent(200), simpleGlslProgram);
-
 
 		crosshairs.setColor(new Color(1.0f, 0.760784f, 0.0f, 1.0f));
 		crosshairs.createBuffers();
@@ -127,17 +122,18 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		glViewport(0, 0, width, height);
 		camera.setScreenDimensions(width, height);
 
-		Matrix.setIdentityM(leftAxis.getAxisTransform().modelMatrix, 0);
-		Matrix.translateM(leftAxis.getAxisTransform().modelMatrix, 0, -width / 2.0f, 0.0f, 0.0f);
+		float[] leftMat = leftAxis.getAxisTransform().getLocalMatrix();
+		Matrix.setIdentityM(leftMat, 0);
+		Matrix.translateM(leftMat, 0, -width/2, 0.0f, 0.0f);
 
-		float[] upMat = upAxis.getAxisTransform().modelMatrix;
+		float[] upMat = upAxis.getAxisTransform().getLocalMatrix();
 		Matrix.setIdentityM(upMat, 0);
 
 		Matrix.translateM(upMat, 0, 0, height / 2.0f, 0.0f);
 		Matrix.rotateM(upMat, 0, -90, 0, 0, 1);
 
-		leftAxis.updateMarks(height - 200, 30);
-		upAxis.updateMarks(width - 200, 30);
+		leftAxis.updateMarks(height - 400, 30);
+		upAxis.updateMarks(width - 300, 30);
 	}
 
 	public ArrayList<RenderedString> getStrings() {
@@ -154,12 +150,29 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 	}
 
     private void renderStrings() {
+		float padding = 10;
+
         glText.begin(projectionViewMatrix);
-        for (RenderedString str : strings) {
-            glText.draw(str.getText(), str.getX(), str.getY());
-        }
+
+		for (RenderedString str : strings) renderString(str);
+
+		for(RenderedString str : leftAxis.getRenderedStrings()) {
+			renderString(str);
+		}
+
+		for(RenderedString str : upAxis.getRenderedStrings()) {
+			renderString(str);
+		}
+
         glText.end();
     }
+
+	private void renderString(RenderedString str) {
+		float[] mat = str.getTransform().getGlobalMatrix();
+		Transform.setNoRotation(mat);
+
+		glText.draw(str.getText(), mat);
+	}
 
 	private void loadRenderableObjects() {
 		for(RenderedObject ro : renderedObjects)
@@ -201,8 +214,6 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 				-300.0f, 0.0f, -1.0f,
 				0.0f, -200.0f, -1.0f);
 
-
-
 		Mesh mesh = builder.toMesh();
 		this.renderedObjects.add(new RenderedObject(mesh, simpleGlslProgram));
 	}
@@ -217,7 +228,7 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 			int dataOffset = 0;
 			int stride = 0;
 
-			Matrix.multiplyMM(temp, 0, camera.getViewMatrix(), 0, ro.getTransform().modelMatrix, 0);
+			Matrix.multiplyMM(temp, 0, camera.getViewMatrix(), 0, ro.getTransform().getGlobalMatrix(), 0);
 			Matrix.multiplyMM(roMVP, 0, camera.getProjectionMatrix(), 0, temp, 0);
 
 			AttributeInfo posAttrInfo = ro.getProgram().getAttributeNameToInfo().get("a_Position");
@@ -229,7 +240,6 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 					4,
 					stride,
 					posAttrInfo.glslType);
-
 
 			glUniformMatrix4fv(
 					ro.getProgram().uniformLocation("u_Matrix"),
@@ -255,5 +265,13 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 	public RenderedObject getCrosshairs() {
 		return crosshairs;
+	}
+
+	public RenderedAxis getLeftAxis() {
+		return leftAxis;
+	}
+
+	public RenderedAxis getUpAxis() {
+		return upAxis;
 	}
 }

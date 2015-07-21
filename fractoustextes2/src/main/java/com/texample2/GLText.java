@@ -281,10 +281,25 @@ public class GLText {
 	//    x, y, z - the x, y, z position to draw text at (bottom left of text; including descent)
 	//    angleDeg - angle to rotate the text
 	// R: [none]
-	public void draw(String text, float x, float y, float z, float angleDegX, float angleDegY, float angleDegZ)  {
+	public void draw(String text, float[] modelMatrix) {
 		float chrHeight = cellHeight * scaleY;          // Calculate Scaled Character Height
 		float chrWidth = cellWidth * scaleX;            // Calculate Scaled Character Width
 		int len = text.length();                        // Get String Length
+		float letterX, letterY;
+		letterX = letterY = 0;
+
+		for (int i = 0; i < len; i++)  {              // FOR Each Character in String
+			int c = (int)text.charAt(i) - CHAR_START;  // Calculate Character Index (Offset by First Char in Font)
+			if (c < 0 || c >= CHAR_CNT)                // IF Character Not In Font
+				c = CHAR_UNKNOWN;                         // Set to Unknown Character Index
+			//TODO: optimize - applying the same model matrix to all the characters in the string
+			batch.drawSprite(letterX, letterY, chrWidth, chrHeight, charRgn[c], modelMatrix);  // Draw the Character
+			letterX += (charWidths[c] + spaceX ) * scaleX;    // Advance X Position by Scaled Character Width
+		}
+	}
+	public void draw(String text, float x, float y, float z, float angleDegX, float angleDegY, float angleDegZ)  {
+		float chrHeight = cellHeight * scaleY;          // Calculate Scaled Character Height
+		float chrWidth = cellWidth * scaleX;            // Calculate Scaled Character Width
 		x += ( chrWidth / 2.0f ) - ( fontPadX * scaleX );  // Adjust Start X
 		y += ( chrHeight / 2.0f ) - ( fontPadY * scaleY );  // Adjust Start Y
 		
@@ -296,17 +311,7 @@ public class GLText {
 		Matrix.rotateM(modelMatrix, 0, angleDegX, 1, 0, 0);
 		Matrix.rotateM(modelMatrix, 0, angleDegY, 0, 1, 0);
 		
-		float letterX, letterY; 
-		letterX = letterY = 0;
-		
-		for (int i = 0; i < len; i++)  {              // FOR Each Character in String
-			int c = (int)text.charAt(i) - CHAR_START;  // Calculate Character Index (Offset by First Char in Font)
-			if (c < 0 || c >= CHAR_CNT)                // IF Character Not In Font
-				c = CHAR_UNKNOWN;                         // Set to Unknown Character Index
-			//TODO: optimize - applying the same model matrix to all the characters in the string
-			batch.drawSprite(letterX, letterY, chrWidth, chrHeight, charRgn[c], modelMatrix);  // Draw the Character
-			letterX += (charWidths[c] + spaceX ) * scaleX;    // Advance X Position by Scaled Character Width
-		}
+		draw(text, modelMatrix);
 	}
 	public void draw(String text, float x, float y, float z, float angleDegZ) {
 		draw(text, x, y, z, 0, 0, angleDegZ);
