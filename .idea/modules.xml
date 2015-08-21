@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/OGLSpiritLevelDisplay.iml" filepath="$PROJECT_DIR$/OGLSpiritLevelDisplay.iml" />
-      <module fileurl="file://$PROJECT_DIR$/androidorientationsensor/androidorientationsensor.iml" filepath="$PROJECT_DIR$/androidorientationsensor/androidorientationsensor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-spiritlevel.iml" filepath="$PROJECT_DIR$/android-spiritlevel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidOrientationSensor/androidorientationsensor.iml" filepath="$PROJECT_DIR$/androidOrientationSensor/androidorientationsensor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/fractoustextes2/fractoustextes2.iml" filepath="$PROJECT_DIR$/fractoustextes2/fractoustextes2.iml" />
       <module fileurl="file://$PROJECT_DIR$/oglwrapper/oglwrapper.iml" filepath="$PROJECT_DIR$/oglwrapper/oglwrapper.iml" />
