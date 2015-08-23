@@ -6,30 +6,28 @@ import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.ScaleGestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 
 public class AngleViewSurface extends GLSurfaceView {
+    private static final String  TAG = "AngleViewSurface";
 
-    IAngleProvider angleProvider;
-    IAngleListener anglesArrivedResponder;
+    private IAngleProvider angleProvider;
+    private IAngleListener anglesArrivedResponder;
+
     private ScaleGestureDetector scaleGestureDetector;
+
+    private AngleGLRenderer renderer;
+
 
     /**
      * The scale listener, used for handling multi-finger scale gestures.
      */
     private final ScaleGestureDetector.OnScaleGestureListener mScaleGestureListener
             = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        /**
-         * This is the active focal point in terms of the viewport. Could be a local
-         * variable but kept here to minimize per-frame allocations.
-         */
 
-        private float lastSpanX;
-        private float lastSpanY;
-
-        // Detects that new pointers are going down.
         @Override
         public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
             return true;
@@ -37,8 +35,23 @@ public class AngleViewSurface extends GLSurfaceView {
 
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-            float focusX = scaleGestureDetector.getFocusX();
-            float focusY = scaleGestureDetector.getFocusY();
+           float d = scaleGestureDetector.getCurrentSpan() - scaleGestureDetector.getPreviousSpan();
+
+            float sign = sign(d);
+            float scale = sign > 0 ? 1.01f : 0.99f;
+
+            AngleExtent extentLeft = renderer.getLeftAxis().getExtent();
+            AngleExtent extentRight = renderer.getUpAxis().getExtent();
+
+
+            extentLeft.setExtent(extentLeft.get() * scaleGestureDetector.getScaleFactor());
+            extentRight.setExtent(extentLeft.get() * scaleGestureDetector.getScaleFactor());
+
+            Log.i(TAG, Float.toString(scaleGestureDetector.getScaleFactor()) + "\n");
+
+            renderer.setUpdateAxes(true);
+
+
             return true;
         }
     };
@@ -52,6 +65,7 @@ public class AngleViewSurface extends GLSurfaceView {
         scaleGestureDetector = new ScaleGestureDetector(context, mScaleGestureListener);
         angleProvider.getAngleListeners().add(anglesArrivedResponder);
 
+        this.renderer = renderer;
 
         // Using OpenGL ES2
         setEGLContextClientVersion(2);
@@ -64,7 +78,6 @@ public class AngleViewSurface extends GLSurfaceView {
         // Render when requestRender() is called. Careful when setting
         // mode to continuous - multiply threads will read/write render strings.
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
 
         angleProvider.calibrate();
     }
@@ -79,5 +92,12 @@ public class AngleViewSurface extends GLSurfaceView {
         anglesArrivedResponder.anglesArrived(0, 0);
 
         return retVal || super.onTouchEvent(e);
+    }
+
+
+    private int sign(float number) {
+        if(number < 0) return -1;
+        else if (number == 0) return 0;
+        else return 1;
     }
 }

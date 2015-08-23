@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * The view for an AngleRange model
  */
 public class RenderedAxis {
-    private static final int MARKING_HEIGHT = 5;
+    private static final int MARKING_HEIGHT = 3;
     public  static final float EXTRA_LEN_MULT = 2.0f;
 
     private Mesh axisMarkMesh;
@@ -57,8 +57,8 @@ public class RenderedAxis {
     public void createMarks(int totalSpace, int markLen)
     {
         this.markLen = markLen;
+        axisTransform.setIdentity();
 
-        Matrix.translateM(axisTransform.getLocalMatrix(), 0, markLen/2, 0, 0);
 
         double orderOfMagnitude = Math.floor(Math.log10(extent.get()));
         double incAngle = Math.pow(10, orderOfMagnitude - 1);
@@ -72,7 +72,7 @@ public class RenderedAxis {
         double currentAngle = 0;
         int currentPos = 0;
         int numMarks = 0;
-        RenderedString str = null;
+        RenderedString str;
 
         //draw upper half
         while (currentAngle <= halfExtent) {
@@ -80,6 +80,7 @@ public class RenderedAxis {
             float[] mm = ro.getTransform().getLocalMatrix();
 
             Matrix.translateM(mm, 0, 0, currentPos, 0);
+            Matrix.translateM(mm, 0, markLen/2, 0, 0);
 
             // draw bigger marks at increments of 10, and at angle 0
             if (numMarks == 10 || currentAngle == 0) {
@@ -87,7 +88,7 @@ public class RenderedAxis {
 
                 str = new RenderedString(
                         markFormat.format(currentAngle),
-                        getWidth() + 10, currentPos, 0, 0, 0, 0);
+                        getWidth() + 10 + markLen/2, currentPos, 0, 0, 0, 0);
 
                 str.getTransform().setParent(axisTransform);
                 renderedStrings.add(str);
@@ -103,7 +104,7 @@ public class RenderedAxis {
 
         str = new RenderedString(
                 markFormat.format(extent.get()/2),
-                0, currentPos, 0, 0, 0, 0);
+                markLen/2, currentPos, 0, 0, 0, 0);
 
         str.getTransform().setParent(axisTransform);
         renderedStrings.add(str);
@@ -119,6 +120,7 @@ public class RenderedAxis {
             float[] mm = ro.getTransform().getLocalMatrix();
 
             Matrix.translateM(mm, 0, 0, currentPos, 0);
+            Matrix.translateM(mm, 0, markLen/2, 0, 0);
 
             // draw bigger marks at increments of 10, and at angle 0
             if (numMarks == 10 || currentAngle == 0) {
@@ -126,7 +128,7 @@ public class RenderedAxis {
 
                 str = new RenderedString(
                         markFormat.format(currentAngle),
-                        getWidth() + 10, currentPos, 0, 0, 0, 0);
+                        getWidth() + 10 + markLen/2, currentPos, 0, 0, 0, 0);
 
                 str.getTransform().setParent(axisTransform);
                 renderedStrings.add(str);
@@ -148,6 +150,7 @@ public class RenderedAxis {
     //TODO: Optimize
     public void updateMarks(int totalSpace, int markLen) {
         marks.clear();
+        renderedStrings.clear();
         createMarks(totalSpace, markLen);
     }
 
@@ -182,4 +185,8 @@ public class RenderedAxis {
         return (1/glPosToAngle) * angle;
     }
 
+
+    public AngleExtent getExtent() {
+        return extent;
+    }
 }

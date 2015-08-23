@@ -46,6 +46,10 @@ public class Transform {
         matrix[0] = matrix[5] = matrix[10] = 1;
     }
 
+    public void setIdentity() {
+        Matrix.setIdentityM(modelMatrix, 0);
+    }
+
 
     public float getLocalX() { return modelMatrix[12]; }
     public void setLocalX(float x) { modelMatrix[12] = x; }
@@ -55,6 +59,9 @@ public class Transform {
 
     public float getLocalZ() { return modelMatrix[14]; }
     public void setLocalZ(float z) { modelMatrix[14] = z; }
+
+
+
 
     public Transform getParent() { return parent; }
     public void setParent(Transform parent) { this.parent = parent; }

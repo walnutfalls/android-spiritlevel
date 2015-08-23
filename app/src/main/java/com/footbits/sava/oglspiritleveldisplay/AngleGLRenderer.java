@@ -47,7 +47,7 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 	private GlslProgram simpleGlslProgram;
 
-    private float[] projectionViewMatrix;
+	private float[] projectionViewMatrix;
 
 
 	private RenderedAxis leftAxis;
@@ -55,7 +55,17 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 	private RenderedObject crosshairs;
 
+	private int width;
+	private int height;
+
+	//This flag is set by other classes when the axes need to be redrawn.
+	//TODO: Find a better way.
+	private boolean updateAxes;
+
 	public AngleGLRenderer(Context context) {
+		this.updateAxes = false;
+
+
 		simpleGlslProgram = new GlslProgram(
 				TextResourceReader.readTextFileFromResource(context, R.raw.simple_vert),
 				TextResourceReader.readTextFileFromResource(context, R.raw.simple_frag));
@@ -69,7 +79,7 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		this.renderedObjects = new ArrayList<>();
 
 		this.camera = new Camera(context, Camera.Projection.Orthographic);
-        this.projectionViewMatrix = new float[16];
+		this.projectionViewMatrix = new float[16];
 
 		this.leftAxis = new RenderedAxis(new AngleExtent(100), simpleGlslProgram);
 		this.upAxis = new RenderedAxis(new AngleExtent(100), simpleGlslProgram);
@@ -104,6 +114,13 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void onDrawFrame(GL10 unused) {
+		if (updateAxes) {
+			leftAxis.updateMarks(height - 400, 30);
+			upAxis.updateMarks(width - 300, 30);
+			setAxisPositions(width, height);
+			updateAxes = false;
+		}
+
 		// Redraw background color
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -118,22 +135,17 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void onSurfaceChanged(GL10 unused, int width, int height) {
+		this.width = width;
+		this.height = height;
+
 		// Set the OpenGL viewport to fill the entire surface.
 		glViewport(0, 0, width, height);
 		camera.setScreenDimensions(width, height);
 
-		float[] leftMat = leftAxis.getAxisTransform().getLocalMatrix();
-		Matrix.setIdentityM(leftMat, 0);
-		Matrix.translateM(leftMat, 0, -width/2, 0.0f, 0.0f);
-
-		float[] upMat = upAxis.getAxisTransform().getLocalMatrix();
-		Matrix.setIdentityM(upMat, 0);
-
-		Matrix.translateM(upMat, 0, 0, height / 2.0f, 0.0f);
-		Matrix.rotateM(upMat, 0, -90, 0, 0, 1);
-
 		leftAxis.updateMarks(height - 400, 30);
 		upAxis.updateMarks(width - 300, 30);
+
+		setAxisPositions(width, height);
 	}
 
 	public ArrayList<RenderedString> getStrings() {
@@ -149,14 +161,12 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		glText.load("Roboto-Regular.ttf", 40, 1, 1);  // Create Font (Height: 14 Pixels / X+Y Padding 2 Pixels)
 	}
 
-    private void renderStrings() {
-		float padding = 10;
-
-        glText.begin(projectionViewMatrix);
+	private void renderStrings() {
+		glText.begin(projectionViewMatrix);
 
 		for (RenderedString str : strings) renderString(str);
 
-		for(RenderedString str : leftAxis.getRenderedStrings()) {
+		for (RenderedString str : leftAxis.getRenderedStrings()) {
 			renderString(str);
 		}
 
@@ -164,8 +174,8 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 			renderString(str);
 		}
 
-        glText.end();
-    }
+		glText.end();
+	}
 
 	private void renderString(RenderedString str) {
 		float[] mat = str.getTransform().getGlobalMatrix();
@@ -175,52 +185,31 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 	}
 
 	private void loadRenderableObjects() {
-		for(RenderedObject ro : renderedObjects)
-		{
+		for (RenderedObject ro : renderedObjects) {
 			// Make sure glsl program is built
-			if(!ro.getProgram().isBuilt())
-			{
+			if (!ro.getProgram().isBuilt()) {
 				ro.getProgram().compile();
 			}
 
 			//if still unbuilt, error building
-			if(!(ro.getProgram().isBuilt()))
-			{
+			if (!(ro.getProgram().isBuilt())) {
 				Log.e(TAG,
-					"Couldn't build shader program.\n" +
-					"Vertex Shader: " + "\n" +
-					"---------------" + "\n" +
-					ro.getProgram().getVertexShader().getSource() + "\n" +
-					"Fragment Shader: " + "\n" +
-					"---------------" + "\n" +
-					ro.getProgram().getFragmentShader().getSource() + "\n\n");
+						"Couldn't build shader program.\n" +
+								"Vertex Shader: " + "\n" +
+								"---------------" + "\n" +
+								ro.getProgram().getVertexShader().getSource() + "\n" +
+								"Fragment Shader: " + "\n" +
+								"---------------" + "\n" +
+								ro.getProgram().getFragmentShader().getSource() + "\n\n");
 			}
 
 			ro.createBuffers();
 		}
 	}
 
-	private void addSampleSquare() {
-		ShapeBuilder builder = new ShapeBuilder(true);
-
-		builder.addQuad(
-				100.0f, 0.0f, -1.0f,
-				100.0f, 100.0f, -1.0f,
-				0.0f, 100.0f, -1.0f,
-				0.0f, 0.0f, -1.0f);
-
-		builder.addTriangle(
-				0.0f, 0.0f, -1.0f,
-				-300.0f, 0.0f, -1.0f,
-				0.0f, -200.0f, -1.0f);
-
-		Mesh mesh = builder.toMesh();
-		this.renderedObjects.add(new RenderedObject(mesh, simpleGlslProgram));
-	}
-
 	private void renderObjects(ArrayList<RenderedObject> objects) {
 		float[] roMVP = new float[16];
-		float[] temp  = new float[16];
+		float[] temp = new float[16];
 
 		for (RenderedObject ro : objects) {
 			ro.getProgram().bind();
@@ -262,6 +251,17 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		}
 	}
 
+	private void setAxisPositions(int width, int height) {
+		float[] leftMat = leftAxis.getAxisTransform().getLocalMatrix();
+		Matrix.setIdentityM(leftMat, 0);
+		Matrix.translateM(leftMat, 0, -width / 2, 0.0f, 0.0f);
+
+		float[] upMat = upAxis.getAxisTransform().getLocalMatrix();
+		Matrix.setIdentityM(upMat, 0);
+
+		Matrix.translateM(upMat, 0, 0, height / 2.0f, 0.0f);
+		Matrix.rotateM(upMat, 0, -90, 0, 0, 1);
+	}
 
 	public RenderedObject getCrosshairs() {
 		return crosshairs;
@@ -273,5 +273,9 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 	public RenderedAxis getUpAxis() {
 		return upAxis;
+	}
+
+	public void setUpdateAxes(boolean updateAxes) {
+		this.updateAxes = updateAxes;
 	}
 }
