@@ -43,14 +43,12 @@ public class AngleViewSurface extends GLSurfaceView {
             AngleExtent extentLeft = renderer.getLeftAxis().getExtent();
             AngleExtent extentRight = renderer.getUpAxis().getExtent();
 
-
             extentLeft.setExtent(extentLeft.get() * scaleGestureDetector.getScaleFactor());
             extentRight.setExtent(extentLeft.get() * scaleGestureDetector.getScaleFactor());
 
             Log.i(TAG, Float.toString(scaleGestureDetector.getScaleFactor()) + "\n");
 
             renderer.setUpdateAxes(true);
-
 
             return true;
         }

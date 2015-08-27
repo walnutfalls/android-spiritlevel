@@ -7,13 +7,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
-
-
         <activity
             android:name=".SpiritLevelActivity"
             android:label="@string/title_activity_spirit_level"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

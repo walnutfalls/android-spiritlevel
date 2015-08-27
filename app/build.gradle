@@ -26,4 +26,5 @@ dependencies {
     compile project(':fractoustextes2')
     compile project(':androidorientationsensor')
     compile project(':util')
+    compile 'com.jakewharton:butterknife:7.0.1'
 }
