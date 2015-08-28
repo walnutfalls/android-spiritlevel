@@ -2,6 +2,7 @@ package com.footbits.sava.oglspiritleveldisplay;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +16,10 @@ import butterknife.ButterKnife;
 
 
 public class SettingsActivity extends Activity {
+
+    public static final String PreferencesFileName = "Preferences";
+    public static final String MinRangePrefKey = "min_range";
+    public static final String MaxRangePrefKey = "max_range";
 
     @Bind(R.id.start_spirit_level) Button startSpiritLevelButton;
 
@@ -55,6 +60,14 @@ public class SettingsActivity extends Activity {
 
 
     public void openSpiritLevel(View v) {
+        SharedPreferences.Editor settingsEditor =
+                getSharedPreferences(PreferencesFileName, MODE_PRIVATE).edit();
+
+        settingsEditor.putFloat(MinRangePrefKey, Float.parseFloat(minRange.getText().toString()));
+        settingsEditor.putFloat(MaxRangePrefKey, Float.parseFloat(maxRange.getText().toString()));
+
+        settingsEditor.commit();
+
         Intent intent = new Intent(this, SpiritLevelActivity.class);
         startActivity(intent);
     }

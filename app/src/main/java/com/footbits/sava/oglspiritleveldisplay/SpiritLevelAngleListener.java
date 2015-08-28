@@ -35,7 +35,7 @@ public class SpiritLevelAngleListener implements IAngleListener {
         renderer.getStrings().add(roll);
 
 
-        //we are lacking an anchoring UI system. the coords that are set
+        //we are lacking an anchoring UI system. the coordinates that are set
         //for these objects are set for good.
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         int halfHeight = dm.heightPixels / 2;

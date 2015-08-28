@@ -59,7 +59,6 @@ public class RenderedAxis {
         this.markLen = markLen;
         axisTransform.setIdentity();
 
-
         double orderOfMagnitude = Math.floor(Math.log10(extent.get()));
         double incAngle = Math.pow(10, orderOfMagnitude - 1);
 
@@ -104,7 +103,7 @@ public class RenderedAxis {
 
         str = new RenderedString(
                 markFormat.format(extent.get()/2),
-                markLen/2, currentPos, 0, 0, 0, 0);
+                markLen/2, currentPos+10, 0, 0, 0, 0);
 
         str.getTransform().setParent(axisTransform);
         renderedStrings.add(str);

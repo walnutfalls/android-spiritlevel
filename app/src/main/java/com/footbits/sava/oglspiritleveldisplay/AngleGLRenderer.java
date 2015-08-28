@@ -92,7 +92,7 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
 		// Set the background frame color
-		glClearColor(0.2f, 0.0f, 0.3f, 1.0f);
+		glClearColor(0.1921f, 0.1054f, 0.5703f, 1.0f);
 
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
@@ -108,7 +108,7 @@ public class AngleGLRenderer implements GLSurfaceView.Renderer {
 		loadRenderableObjects();
 		initGLText();
 
-		crosshairs.setColor(new Color(1.0f, 0.760784f, 0.0f, 1.0f));
+		crosshairs.setColor(new Color(1.0f, 0.875f, 0.0f, 1.0f));
 		crosshairs.createBuffers();
 		renderedObjects.add(crosshairs);
 	}
