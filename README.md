@@ -6,7 +6,8 @@ The spirit-level application itsself is in /app
 
 ------------------
 API's Used:
-Butterknife for view injection
+Butterknife for view injection: https://github.com/concubicycle/butterknife
+
 Android Orientation Sensor: https://github.com/concubicycle/Android-Orientation-Sensor
 
 Texample2 (text rendering code based on blog post by Fractous): https://github.com/concubicycle/Texample2
