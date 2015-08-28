@@ -21,10 +21,10 @@ public class SettingsActivity extends Activity {
     public static final String MinRangePrefKey = "min_range";
     public static final String MaxRangePrefKey = "max_range";
 
+    private SharedPreferences preferences;
+
     @Bind(R.id.start_spirit_level) Button startSpiritLevelButton;
-
     @Bind(R.id.min_range) EditText minRange;
-
     @Bind(R.id.max_range) EditText maxRange;
 
 
@@ -33,6 +33,8 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
+        preferences = getSharedPreferences(PreferencesFileName, MODE_PRIVATE);
+        setInputsFromPrefs();
     }
 
     @Override
@@ -58,6 +60,12 @@ public class SettingsActivity extends Activity {
     }
 
 
+    @Override
+    protected void onResume () {
+        super.onResume();
+        setInputsFromPrefs();
+    }
+
 
     public void openSpiritLevel(View v) {
         SharedPreferences.Editor settingsEditor =
@@ -71,4 +79,17 @@ public class SettingsActivity extends Activity {
         Intent intent = new Intent(this, SpiritLevelActivity.class);
         startActivity(intent);
     }
+
+    private void setInputsFromPrefs() {
+        if(preferences.contains(MinRangePrefKey)) {
+            float min = preferences.getFloat(MinRangePrefKey, 0);
+            minRange.setText(Float.toString(min));
+        }
+
+        if(preferences.contains(MaxRangePrefKey)) {
+            float max = preferences.getFloat(MaxRangePrefKey, 0);
+            maxRange.setText(Float.toString(max));
+        }
+    }
+
 }

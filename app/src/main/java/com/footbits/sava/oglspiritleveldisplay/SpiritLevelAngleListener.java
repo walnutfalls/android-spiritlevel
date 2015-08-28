@@ -42,9 +42,9 @@ public class SpiritLevelAngleListener implements IAngleListener {
         int halfWidth = dm.widthPixels / 2;
 
         pitch.getTransform().setLocalX(halfWidth - 150);
-        pitch.getTransform().setLocalY(-halfHeight + 50);
+        pitch.getTransform().setLocalY(-halfHeight + 75);
         roll.getTransform().setLocalX(halfWidth - 150);
-        roll.getTransform().setLocalY(-halfHeight + 100);
+        roll.getTransform().setLocalY(-halfHeight + 125);
     }
 
 

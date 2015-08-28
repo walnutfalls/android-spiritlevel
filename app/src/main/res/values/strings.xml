@@ -3,7 +3,7 @@
     <string name="title_activity_spirit_level">Spirit Level</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Simple Spirit Level</string>
 
     <string name="min_axis_range">Minimum Axis Range:</string>
     <string name="max_axis_range">Maximum Axis Range:</string>
